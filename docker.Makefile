@@ -15,3 +15,11 @@ vendor:
 .PHONY: test
 test:
 	@./scripts/dev-shell.sh make test
+
+.PHONY: image
+image: 
+	@make image
+
+.PHONY: push
+push: 
+	@make push

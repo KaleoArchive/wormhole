@@ -1,0 +1,15 @@
+version: '2'
+services:
+  wormhole:
+    build: ./
+    ports:
+    - "80:80"
+    command: ["wormhole"]
+  hub-1:
+    image: registry:2.5.0
+    ports:
+    - "5001:5000"
+  hub-2:
+    image: registry:2.5.0
+    ports:
+    - "5002:5000"

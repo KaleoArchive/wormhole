@@ -15,3 +15,11 @@ vendor:
 .PHONY: test
 test:
 	@./scripts/test.sh
+
+.PHONY: image
+image: 
+	@./scripts/build/image.sh
+
+.PHONY: push
+push: 
+	@./scripts/build/push.sh
