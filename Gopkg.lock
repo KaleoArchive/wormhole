@@ -2,56 +2,62 @@
 
 
 [[projects]]
-  branch = "master"
-  name = "github.com/gin-contrib/sse"
+  name = "github.com/Sirupsen/logrus"
   packages = ["."]
-  revision = "22d885f9ecc78bf4ee5d72b937e4bbcdc58e8cae"
+  revision = "f006c2ac4710855cf0f916dd6b77acf6b048dc6e"
+  version = "v1.0.3"
 
 [[projects]]
-  name = "github.com/gin-gonic/gin"
-  packages = [".","binding","render"]
-  revision = "d459835d2b077e44f7c9b453505ee29881d5d12d"
-  version = "v1.2"
+  name = "github.com/docker/distribution"
+  packages = [".","context","digest","manifest","manifest/schema1","manifest/schema2","reference","uuid"]
+  revision = "48294d928ced5dd9b378f7fd7c6f5da3ff3f2c89"
+  version = "v2.6.2"
 
 [[projects]]
   branch = "master"
-  name = "github.com/golang/protobuf"
-  packages = ["proto"]
-  revision = "130e6b02ab059e7b717a096f397c5b60111cae74"
-
-[[projects]]
-  name = "github.com/mattn/go-isatty"
+  name = "github.com/docker/libtrust"
   packages = ["."]
-  revision = "0360b2af4f38e8d38c7fce2a9f4e702702d73a39"
-  version = "v0.0.3"
+  revision = "aabc10ec26b754e797f9028f4589c5b7bd90dc20"
+
+[[projects]]
+  name = "github.com/gorilla/context"
+  packages = ["."]
+  revision = "1ea25387ff6f684839d82767c1733ff4d4d15d0a"
+  version = "v1.1"
+
+[[projects]]
+  name = "github.com/gorilla/mux"
+  packages = ["."]
+  revision = "24fca303ac6da784b9e8269f724ddeb0b2eea5e7"
+  version = "v1.5.0"
 
 [[projects]]
   branch = "master"
-  name = "github.com/ugorji/go"
-  packages = ["codec"]
-  revision = "f26fc641ec9d52a2161443cf9bb9fd53b9062a22"
+  name = "github.com/kaleocheng/docker-registry-client"
+  packages = ["registry"]
+  revision = "ca26265014769a0f5aff9f1497d3a63ab8fe0ea0"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/crypto"
+  packages = ["ssh/terminal"]
+  revision = "9419663f5a44be8b34ca85f08abc5fe1be11f8a3"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/net"
+  packages = ["context"]
+  revision = "1087133bc4af3073e18add999345c6ae75918503"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
-  packages = ["unix"]
+  packages = ["unix","windows"]
   revision = "686000749eaec0b8855b8eef5336cf63899fe51d"
-
-[[projects]]
-  name = "gopkg.in/go-playground/validator.v8"
-  packages = ["."]
-  revision = "5f1438d3fca68893a817e4a66806cea46a9e4ebf"
-  version = "v8.18.2"
-
-[[projects]]
-  branch = "v2"
-  name = "gopkg.in/yaml.v2"
-  packages = ["."]
-  revision = "eb3733d160e74a9c7e442f435eb3bea458e1d19f"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "1a7c1af25b9e5237b765e696450bdd4293f883771343f69f97048229c28a98b2"
+  inputs-digest = "676340fb2ea998cf53842a8d6720842bbf927633c27b3be411d376af5138f22f"
   solver-name = "gps-cdcl"
   solver-version = 1

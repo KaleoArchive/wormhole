@@ -1,13 +1,33 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"fmt"
+
+	"github.com/kaleocheng/docker-registry-client/registry"
+	"github.com/kaleocheng/wormhole/trans"
+)
 
 func main() {
-	r := gin.Default()
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "hello world",
-		})
-	})
-	r.Run() // listen and serve on 0.0.0.0:8080
+
+	url := "http://localhost:5001"
+	username := "" // anonymous
+	password := "" // anonymous
+	hub, err := registry.New(url, username, password)
+	if err != nil {
+		return
+	}
+
+	url2 := "http://localhost:5002"
+	username2 := "" // anonymous
+	password2 := "" // anonymous
+	hub2, err := registry.New(url2, username2, password2)
+	if err != nil {
+		return
+	}
+
+	t := trans.NewTrans(hub, hub2)
+	if err := t.Migrate("library/alpine", "latest"); err != nil {
+		fmt.Println(err)
+		return
+	}
 }
