@@ -33,6 +33,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/jeffail/tunny"
+  packages = ["."]
+  revision = "54ae6b3774037722ea5cc04b6af6e971b6221fbf"
+
+[[projects]]
+  branch = "master"
   name = "github.com/kaleocheng/docker-registry-client"
   packages = ["registry"]
   revision = "ca26265014769a0f5aff9f1497d3a63ab8fe0ea0"
@@ -58,6 +64,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "676340fb2ea998cf53842a8d6720842bbf927633c27b3be411d376af5138f22f"
+  inputs-digest = "d5b768b01c619e1171c23a8c120789f06a67db4763a4f179fa239673293ef16d"
   solver-name = "gps-cdcl"
   solver-version = 1

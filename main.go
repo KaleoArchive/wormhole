@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/kaleocheng/docker-registry-client/registry"
+	"github.com/kaleocheng/wormhole/job"
 	"github.com/kaleocheng/wormhole/trans"
 )
 
@@ -26,7 +27,17 @@ func main() {
 	}
 
 	t := trans.NewTrans(hub, hub2)
-	if err := t.Migrate("library/alpine", "latest"); err != nil {
+
+	image, err := trans.GetImage(hub, "library/alpine", "latest")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	job.Start(t)
+	defer job.Close()
+
+	if _, err := job.Add(image); err != nil {
 		fmt.Println(err)
 		return
 	}

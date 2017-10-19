@@ -21,61 +21,35 @@ func NewTrans(src *registry.Registry, dst *registry.Registry) *Trans {
 	}
 }
 
-// NewJob return a Migretion
-func (t *Trans) NewJob(repository, reference string) (*Job, error) {
-	j := &Job{
-		Repository: repository,
-		Reference:  reference,
-	}
-	manifest, err := t.Src.ManifestV2(j.Repository, j.Reference)
-	if err != nil {
-		return nil, err
-	}
-
-	j.Manifest = manifest
-
-	digest, err := t.Src.ManifestDigest(j.Repository, j.Reference)
-	if err != nil {
-		return nil, err
-	}
-	j.Digest = digest
-
-	return j, nil
-}
-
 // Migrate migrates repo:tag from SrcClient to DstClient
 // If the image already exists in DstClient, It does nothing.
-func (t *Trans) Migrate(repository, reference string) error {
-	j, err := t.NewJob(repository, reference)
-	if err != nil {
-		return err
-	}
-	ok, err := t.Check(j)
+func (t *Trans) Migrate(i *Image) error {
+	ok, err := t.Check(i)
 	if err != nil {
 		return err
 	}
 	if ok {
-		return t.Start(j)
+		return t.Start(i)
 	}
 	return nil
 }
 
 // Start starts a Job
-func (t *Trans) Start(j *Job) error {
-	if err := t.migrateConfig(j); err != nil {
+func (t *Trans) Start(i *Image) error {
+	if err := t.migrateConfig(i); err != nil {
 		return err
 	}
-	if err := t.migrateLayers(j); err != nil {
+	if err := t.migrateLayers(i); err != nil {
 		return err
 	}
-	digest, err := t.migrateManifest(j)
+	digest, err := t.migrateManifest(i)
 	log.Println(digest)
 	return err
 }
 
 // Check if the image already exists in DstClient
-func (t *Trans) Check(j *Job) (bool, error) {
-	exist, err := t.Dst.HasManifest(j.Repository, j.Reference)
+func (t *Trans) Check(i *Image) (bool, error) {
+	exist, err := t.Dst.HasManifest(i.Repository, i.Reference)
 	if err != nil {
 		return false, err
 	}
@@ -84,12 +58,12 @@ func (t *Trans) Check(j *Job) (bool, error) {
 		return true, nil
 	}
 
-	digestDst, err := t.Dst.ManifestDigest(j.Repository, j.Reference)
+	digestDst, err := t.Dst.ManifestDigest(i.Repository, i.Reference)
 	if err != nil {
 		return false, err
 	}
 
-	if j.Digest != digestDst {
+	if i.Digest != digestDst {
 		return true, nil
 	}
 
@@ -119,26 +93,26 @@ func (t *Trans) migrateLayer(digest digest.Digest, repository string) error {
 	return err
 }
 
-func (t *Trans) migrateConfig(j *Job) error {
-	return t.migrateLayer(j.Manifest.Config.Digest, j.Repository)
+func (t *Trans) migrateConfig(i *Image) error {
+	return t.migrateLayer(i.Manifest.Config.Digest, i.Repository)
 }
 
-func (t *Trans) migrateLayers(j *Job) error {
-	for _, l := range j.Manifest.Layers {
-		if err := t.migrateLayer(l.Digest, j.Repository); err != nil {
+func (t *Trans) migrateLayers(i *Image) error {
+	for _, l := range i.Manifest.Layers {
+		if err := t.migrateLayer(l.Digest, i.Repository); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (t *Trans) migrateManifest(j *Job) (string, error) {
-	mediaType, payload, err := j.Manifest.Payload()
+func (t *Trans) migrateManifest(i *Image) (string, error) {
+	mediaType, payload, err := i.Manifest.Payload()
 	if err != nil {
 		return "", err
 	}
 
-	digest, err := t.Dst.PushManifest(j.Repository, j.Reference, mediaType, payload)
+	digest, err := t.Dst.PushManifest(i.Repository, i.Reference, mediaType, payload)
 	if err != nil {
 		return "", err
 	}
