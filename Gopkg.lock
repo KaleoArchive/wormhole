@@ -39,6 +39,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/juju/ratelimit"
+  packages = ["."]
+  revision = "5b9ff866471762aa2ab2dced63c9fb6f53921342"
+
+[[projects]]
+  branch = "master"
   name = "github.com/kaleocheng/docker-registry-client"
   packages = ["registry"]
   revision = "ca26265014769a0f5aff9f1497d3a63ab8fe0ea0"
@@ -64,6 +70,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "d5b768b01c619e1171c23a8c120789f06a67db4763a4f179fa239673293ef16d"
+  inputs-digest = "b427e26c51b7145e322245cba46ba56f79116ec3f7473dd184be85107ef4e7bf"
   solver-name = "gps-cdcl"
   solver-version = 1

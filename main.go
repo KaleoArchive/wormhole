@@ -36,6 +36,7 @@ func main() {
 
 	job.Start(t)
 	defer job.Close()
+	job.SetRateLimit(10000 * 1024)
 
 	if _, err := job.Add(image); err != nil {
 		fmt.Println(err)

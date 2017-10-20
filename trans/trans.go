@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/docker/distribution/digest"
+	"github.com/juju/ratelimit"
 	"github.com/kaleocheng/docker-registry-client/registry"
 )
 
@@ -23,23 +24,23 @@ func NewTrans(src *registry.Registry, dst *registry.Registry) *Trans {
 
 // Migrate migrates repo:tag from SrcClient to DstClient
 // If the image already exists in DstClient, It does nothing.
-func (t *Trans) Migrate(i *Image) error {
+func (t *Trans) Migrate(i *Image, ratelimit *float64) error {
 	ok, err := t.Check(i)
 	if err != nil {
 		return err
 	}
 	if ok {
-		return t.Start(i)
+		return t.Start(i, ratelimit)
 	}
 	return nil
 }
 
 // Start starts a Job
-func (t *Trans) Start(i *Image) error {
-	if err := t.migrateConfig(i); err != nil {
+func (t *Trans) Start(i *Image, ratelimit *float64) error {
+	if err := t.migrateConfig(i, ratelimit); err != nil {
 		return err
 	}
-	if err := t.migrateLayers(i); err != nil {
+	if err := t.migrateLayers(i, ratelimit); err != nil {
 		return err
 	}
 	digest, err := t.migrateManifest(i)
@@ -70,7 +71,7 @@ func (t *Trans) Check(i *Image) (bool, error) {
 	return false, nil
 }
 
-func (t *Trans) migrateLayer(digest digest.Digest, repository string) error {
+func (t *Trans) migrateLayer(digest digest.Digest, repository string, rl *float64) error {
 	exist, err := t.Dst.HasLayer(repository, digest)
 	if err != nil {
 		return err
@@ -84,22 +85,29 @@ func (t *Trans) migrateLayer(digest digest.Digest, repository string) error {
 	if reader != nil {
 		defer reader.Close()
 	}
-
 	if err != nil {
+		return err
+	}
+
+	if rl != nil {
+		b := ratelimit.NewBucketWithRate(*rl, int64((*rl)*1.2))
+		limitReader := ratelimit.Reader(reader, b)
+		err = t.Dst.UploadLayer(repository, digest, limitReader)
 		return err
 	}
 
 	err = t.Dst.UploadLayer(repository, digest, reader)
 	return err
+
 }
 
-func (t *Trans) migrateConfig(i *Image) error {
-	return t.migrateLayer(i.Manifest.Config.Digest, i.Repository)
+func (t *Trans) migrateConfig(i *Image, ratelimit *float64) error {
+	return t.migrateLayer(i.Manifest.Config.Digest, i.Repository, ratelimit)
 }
 
-func (t *Trans) migrateLayers(i *Image) error {
+func (t *Trans) migrateLayers(i *Image, ratelimit *float64) error {
 	for _, l := range i.Manifest.Layers {
-		if err := t.migrateLayer(l.Digest, i.Repository); err != nil {
+		if err := t.migrateLayer(l.Digest, i.Repository, ratelimit); err != nil {
 			return err
 		}
 	}
