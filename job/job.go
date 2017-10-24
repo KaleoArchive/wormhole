@@ -64,13 +64,13 @@ func (j *Job) Start(t *trans.Trans) {
 }
 
 // Add a new job
-func Add(i *trans.Image) (interface{}, error) {
-	return j.Add(i)
+func Add(i *trans.Image) {
+	j.Add(i)
 }
 
 // Add a new job
-func (j *Job) Add(i *trans.Image) (interface{}, error) {
-	return j.Pool.SendWork(i)
+func (j *Job) Add(i *trans.Image) {
+	j.Pool.SendWorkAsync(i, nil)
 }
 
 // Close the job pool
