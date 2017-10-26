@@ -3,12 +3,16 @@ package main
 import (
 	"fmt"
 
+	"github.com/gin-gonic/gin"
 	"github.com/kaleocheng/docker-registry-client/registry"
 	"github.com/kaleocheng/wormhole/job"
 	"github.com/kaleocheng/wormhole/trans"
 )
 
 func main() {
+
+	router := gin.Default()
+	router.Run()
 
 	url := "http://localhost:5001"
 	username := "" // anonymous
