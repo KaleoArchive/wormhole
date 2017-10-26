@@ -9,9 +9,10 @@ import (
 
 // Job struct
 type Job struct {
-	Number    int
-	Pool      *tunny.WorkPool
-	RateLimit *float64
+	Number      int
+	Pool        *tunny.WorkPool
+	RateLimit   *float64
+	ReadyWorker chan *tunny.TunnyWorker
 }
 
 var j *Job
@@ -71,6 +72,15 @@ func Add(i *trans.Image) {
 // Add a new job
 func (j *Job) Add(i *trans.Image) {
 	j.Pool.SendWorkAsync(i, nil)
+}
+
+// Schedule get a job from the job queue and give it to worker.
+func (j *Job) Schedule() {
+	go func() {
+		for {
+
+		}
+	}()
 }
 
 // Close the job pool
