@@ -11,7 +11,12 @@ func NewTrans(c *gin.Context) {
 	ts := &api.Trans{}
 	c.Bind(ts)
 
-	c.JSON(200, gin.H{
-		"transId": "hello",
+	id, err := api.NewTrans(ts)
+	if err != nil {
+		WriteErrResponse(c, err)
+		return
+	}
+	WriteSuccessResponse(c, gin.H{
+		"transId": id,
 	})
 }

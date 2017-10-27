@@ -14,6 +14,7 @@ func main() {
 
 	router := gin.Default()
 	router.POST("/registry", handler.NewRegistry)
+	router.POST("/trans", handler.NewTrans)
 	router.Run()
 
 	url := "http://localhost:5001"
