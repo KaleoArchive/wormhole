@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/kaleocheng/docker-registry-client/registry"
+	"github.com/kaleocheng/wormhole/handler"
 	"github.com/kaleocheng/wormhole/job"
 	"github.com/kaleocheng/wormhole/trans"
 )
@@ -12,6 +13,7 @@ import (
 func main() {
 
 	router := gin.Default()
+	router.POST("/registry", handler.NewRegistry)
 	router.Run()
 
 	url := "http://localhost:5001"
