@@ -5,24 +5,23 @@ import "github.com/segmentio/ksuid"
 // Trans ...
 type Trans struct {
 	ID            string `json:"id"`
-	SrcRegistryID string `json:"src_id"`
-	DstRegistryID string `json:"dst_id"`
+	SrcRegistryID string `json:"srcId"`
+	DstRegistryID string `json:"dstId"`
 }
 
 var transMap map[string]*Trans
 
+func init() {
+	transMap = make(map[string]*Trans)
+}
+
 // NewTrans ...
-func NewTrans(srcID, dstID string) (string, error) {
-	rs := GetRegistry(srcID)
-	rd := GetRegistry(dstID)
+func NewTrans(t *Trans) (string, error) {
+	rs := GetRegistry(t.SrcRegistryID)
+	rd := GetRegistry(t.DstRegistryID)
 
-	if rs == nil && rd == nil {
+	if rs == nil || rd == nil {
 		return "", errInvalidRegistry
-	}
-
-	t := &Trans{
-		SrcRegistryID: srcID,
-		DstRegistryID: dstID,
 	}
 
 	ok, err := TransExist(t)
@@ -46,5 +45,5 @@ func AddTrans(t *Trans) {
 
 // TransExist ...
 func TransExist(t *Trans) (bool, error) {
-	return true, nil
+	return false, nil
 }
