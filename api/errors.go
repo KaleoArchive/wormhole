@@ -13,7 +13,8 @@ type ErrorResponse struct {
 }
 
 var (
-	errInvalidRegistry = errors.New("Invalid Registry")
+	errInvalidRegistry      = errors.New("Invalid Registry")
+	errCreateRegistryFailed = errors.New("Create registry failed")
 )
 
 var errorResponseMap = map[error]ErrorResponse{
@@ -22,18 +23,22 @@ var errorResponseMap = map[error]ErrorResponse{
 		Description:    "Invalid Registry",
 		HTTPStatusCode: http.StatusBadRequest,
 	},
+	errCreateRegistryFailed: {
+		Code:           "errCreateRegistryFailed",
+		Description:    "Create registry failed, Check your parameter or try it later",
+		HTTPStatusCode: http.StatusFailedDependency,
+	},
 }
 
 // GetErrorResponse ...
 func GetErrorResponse(e error) ErrorResponse {
-	//er := errorResponseMap[e]
-	//if er != ErrorResponse{} {
-	//	return er
-
-	//}
-	return ErrorResponse{
-		Code:           "errNotDefine",
-		Description:    "No Define Error",
-		HTTPStatusCode: http.StatusInternalServerError,
+	er := errorResponseMap[e]
+	if er == (ErrorResponse{}) {
+		return ErrorResponse{
+			Code:           "errNotDefine",
+			Description:    "No Define Error",
+			HTTPStatusCode: http.StatusInternalServerError,
+		}
 	}
+	return er
 }
